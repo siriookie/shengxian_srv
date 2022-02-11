@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+
+import "google/protobuf/empty.proto";
+
+option go_package="order/.;invpb";
+//脚本： protoc -I=. --go_out=plugins=grpc:. --validate_out="lang=go:." hello.proto    //在git里面好使点
+
+service Order {
+  //购物车相关
+  rpc CartItemList(UserInfoRequest) returns (CartItemListResponse);  //根据用户获取购物车内的信息
+  rpc CreateCartItem(CartItemRequest) returns (ShopCartInfoResponse); //添加商品到购物车
+  rpc UpdateCartItem(CartItemRequest) returns (google.protobuf.Empty);  //更新商品数量或者勾选状态
+  rpc DeleteCartItem(CartItemRequest) returns (google.protobuf.Empty);  //删除购物车条目
+
+  //订单相关
+  rpc CreateOrder(OrderRequest) returns (OrderInfoResponse);  //创建订单
+  rpc GetOrderList(OrderFilterRequest) returns (OrderListResponse);  //获取订单列表
+  rpc GetOrderDetail(OrderRequest) returns (OrderInfoDetailResponse); //获取订单详情
+  rpc UpdateOrderStatus(OrderStatus) returns (google.protobuf.Empty); //修改订单状态
+}
+
+message UserInfoRequest {
+  int32 ID = 1;
+}
+
+message CartItemListResponse {
+  int32 Total = 1;
+  repeated ShopCartInfoResponse ShopCartInfoResponse = 2;
+}
+message ShopCartInfoResponse {
+  int32 ID = 1;
+  int32 UserID = 2;
+  int32 GoodsID = 3;
+  int32 Nums = 4;
+  bool Checked = 5;
+}
+
+message CartItemRequest {
+  int32 ID = 1;
+  int32 UserID = 2;
+  int32 GoodsID = 3;
+  int32 Nums = 4;
+  bool Checked = 5;
+}
+message OrderRequest {
+  int32 ID = 1;
+  int32 userID = 2;
+  string address = 3;
+  string name = 4;
+  string mobile = 5;
+  string post = 6;
+}
+
+message OrderInfoResponse {
+  int32 ID = 1;
+  int32 userID = 2;
+  string OrderSn = 3;
+  string PayType = 4;
+  string Status = 5;
+  string Post = 6;
+  float Total = 7;
+  string Address = 8;
+  string Name = 9;
+  string Mobile = 10;
+
+}
+
+message OrderFilterRequest {
+  int32 UserID = 1;
+  int32 Pages = 2;
+  int32 PagePerNums = 3;
+}
+
+message OrderListResponse {
+  int32 Total = 1;
+  repeated OrderInfoResponse data = 2;
+}
+
+message OrderInfoDetailResponse {
+    OrderInfoResponse OrderInfo = 1;
+    repeated OrderItemResponse goos = 2;
+}
+
+message OrderItemResponse {
+  int32 ID = 1;
+  int32 OrderID = 2;
+  int32 GoodsID = 3;
+  string GoodsName = 4;
+  string GoodsImage = 5;
+  float GoodsPrice = 6;
+  int32 nums = 7;
+}
+
+message OrderStatus {
+  int32 ID = 1;
+  string OrderSn = 2;
+  string Status = 3;
+}

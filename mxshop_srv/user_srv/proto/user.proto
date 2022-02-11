@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+
+import "google/protobuf/empty.proto";
+
+package user;
+option go_package="user/.;userpb";
+//脚本： protoc -I=. --go_out=plugins=grpc:. --validate_out="lang=go:." hello.proto    //在git里面好使点
+
+
+service User {
+  rpc GetUserList(PageInfo) returns (UserListResponse);
+  rpc GetUserByMobile(MobileRequest) returns (UserInfoResponse);
+  rpc GetUserByID(IDRequest) returns (UserInfoResponse);
+  rpc CreateUser(CreateUserRequest) returns (UserInfoResponse);
+  rpc UpDateUserInfo(UpDateUserInfoRequest) returns (google.protobuf.Empty);
+  rpc CheckPassword(CheckPasswordRequest) returns (CheckPasswordResponse);
+}
+
+message PageInfo {
+  uint32 pn = 1;
+  uint32 pSize = 2;
+}
+
+message UserListResponse{
+  int32 total = 1;
+  repeated UserInfoResponse data = 2;
+}
+
+message UserInfoResponse{
+  int32 id = 1;
+  string password = 2;
+  string mobile = 3;
+  string nickname = 4;
+  uint64 birthday = 5;
+  string gender = 6;
+  int32 role = 7;
+}
+
+message MobileRequest {
+  string mobile = 1;
+}
+message IDRequest {
+  int32 id = 1;
+}
+
+message CreateUserRequest{
+  string nickname = 1;
+  string password = 2;
+  string mobile = 3;
+}
+message UpDateUserInfoRequest {
+  int32 id = 1;
+  string nickname = 2;
+  string gender = 3;
+  uint64 birthday = 4;
+}
+message CheckPasswordRequest {
+  string password = 1;
+  string encryptedPassword = 2;
+}
+message CheckPasswordResponse {
+  bool success = 1;
+}

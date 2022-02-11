@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+
+import "google/protobuf/empty.proto";
+
+package user;
+option go_package="inventory/.;invpb";
+//脚本： protoc -I=. --go_out=plugins=grpc:. --validate_out="lang=go:." hello.proto    //在git里面好使点
+
+
+service Inventory{
+  rpc SetInv(GoodsInvInfo) returns (google.protobuf.Empty); //设置库存
+  rpc InvDetail(GoodsInvInfo) returns (GoodsInvInfo); //查看库存详情
+  rpc Sell(SellInfo) returns (google.protobuf.Empty); //扣库存
+  rpc ReBack(SellInfo) returns (google.protobuf.Empty); //库存归还
+}
+
+message GoodsInvInfo {
+  int32 goodsID = 1;
+  int32 num = 2;
+}
+
+message SellInfo {
+  repeated GoodsInvInfo goodsInfo = 1;
+  string orderSn = 2;
+}
